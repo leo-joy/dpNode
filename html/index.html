@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script src="../js/jquery.js"></script>
+		<script>
+			$.ajax({
+				type:"POST",
+				data:"name=pdesoft",
+				url:'http://121.41.107.203:8888/getJson',
+				success:function(data){
+					alert(data.name);
+				}
+			})
+		</script>
+	</head>
+	<body>
+	PDE
+	</body>
+</html>
