@@ -81,25 +81,16 @@ function getJson(response, req) {
     req.addListener("end", function () {
         console.log('数据接收完毕');
         var params = querystring.parse(postData);//GET & POST  ////解释表单数据部分{name="zzl",email="zzl@sina.com"}
-        console.log(params);
-        console.log(params["name"]);
-        PushToRedis(params["name"]);
+        console.log(postData);
+        //console.log(postData["id"]);
+        //PushToRedis(postData["id"]);
         response.writeHead(500, {
             "Content-Type": "text/plain;charset=utf-8"
         });
         response.end("数据提交完毕");
     });
     
-	//表单接收完成后，再处理redis部分
-	function PushToRedis(info) {
-	    var client = redis.createClient();
-	    client.lpush("topnews", info);
-	    console.log("PushToRedis:" + info);
-	    client.lpop("topnews", function (i, o) {
-	        console.log(o);//回调，所以info可能没法得到o的值，就被res.write输出了
-	    })
-	    client.quit();
-	}
+	
 	response.setHeader("Access-Control-Allow-Origin", "http://127.0.0.1:8020");
     response.setHeader("Access-Control-Allow-Headers", "X-Requested-With");
     response.setHeader("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
@@ -107,6 +98,17 @@ function getJson(response, req) {
 	
 	response.write('{"name":"pde"}');
 	response.end();
+}
+
+//表单接收完成后，再处理redis部分
+function PushToRedis(info) {
+    var client = redis.createClient();
+    client.lpush("topnews", info);
+    console.log("PushToRedis:" + info);
+    client.lpop("topnews", function (i, o) {
+        console.log(o);//回调，所以info可能没法得到o的值，就被res.write输出了
+    })
+    client.quit();
 }
 exports.startup = startup;
 exports.upload = upload;
